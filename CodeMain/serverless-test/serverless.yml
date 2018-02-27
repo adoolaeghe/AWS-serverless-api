@@ -35,8 +35,8 @@ functions:
   # - cors: enabled CORS (Cross-Origin Resource Sharing) for browser cross
   #     domain api call
   # - authorizer: authenticate using the AWS IAM role
-  create:
-    handler: create.main
+  createMur:
+    handler: murApi/createMur.main
     events:
       - http:
           path: notes
@@ -60,7 +60,7 @@ functions:
     # Defines an HTTP API endpoint that calls the main function in list.js
     # - path: url path is /notes
     # - method: GET request
-    handler: list.main
+    handler: murApi/listUserMurs.main
     events:
       - http:
           path: notes

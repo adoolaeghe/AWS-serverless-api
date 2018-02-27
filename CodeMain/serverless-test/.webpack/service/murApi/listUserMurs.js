@@ -67,13 +67,13 @@
 /* 0 */
 /***/ (function(module, exports) {
 
-module.exports = require("uuid");
+module.exports = require("aws-sdk");
 
 /***/ }),
 /* 1 */
 /***/ (function(module, exports) {
 
-module.exports = require("aws-sdk");
+module.exports = require("uuid");
 
 /***/ }),
 /* 2 */
@@ -97,28 +97,31 @@ var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
 var main = exports.main = function () {
   var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(event, context, callback) {
-    var murObject, murSchemaObject, dynamodb;
+    var params;
     return _regenerator2.default.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            murObject = (0, _murs2.default)(event);
-            murSchemaObject = (0, _murSchema2.default)(event, murObject);
+            params = {
+              TableName: "murs",
+              KeyConditionExpression: "userid = :userid",
+              ExpressionAttributeValues: {
+                ":userid": {
+                  S: event.requestContext.identity.cognitoIdentityId
+                }
+              }
+            };
 
-            // params.Item.murSchemas.push(params1.Item.userSchemaId);
-
-            dynamodb = new _awsSdk2.default.DynamoDB();
-
-
-            dynamodb.putItem(murSchemaObject, function (err, data) {
-              if (err) console.log(err, err.stack);
+            dynamodb.query(params, function (err, data) {
+              if (err) {
+                console.log(err);
+                callback(null, (0, _responseLib.failure)({ status: false, error: "The query coudn't match any elements" }));
+              } else {
+                callback(null, (0, _responseLib.success)(data));
+              }
             });
 
-            dynamodb.putItem(murObject, function (err, data) {
-              if (err) console.log(err, err.stack);
-            });
-
-          case 5:
+          case 2:
           case "end":
             return _context.stop();
         }
@@ -131,17 +134,13 @@ var main = exports.main = function () {
   };
 }();
 
-var _uuid = __webpack_require__(0);
-
-var _uuid2 = _interopRequireDefault(_uuid);
-
 var _dynamodbLib = __webpack_require__(5);
 
 var dynamoDbLib = _interopRequireWildcard(_dynamodbLib);
 
 var _responseLib = __webpack_require__(6);
 
-var _awsSdk = __webpack_require__(1);
+var _awsSdk = __webpack_require__(0);
 
 var _awsSdk2 = _interopRequireDefault(_awsSdk);
 
@@ -156,6 +155,8 @@ var _murSchema2 = _interopRequireDefault(_murSchema);
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var dynamodb = new _awsSdk2.default.DynamoDB();
 
 /***/ }),
 /* 3 */
@@ -181,7 +182,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.call = call;
 
-var _awsSdk = __webpack_require__(1);
+var _awsSdk = __webpack_require__(0);
 
 var _awsSdk2 = _interopRequireDefault(_awsSdk);
 
@@ -251,13 +252,13 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = Mur;
 
-var _uuid = __webpack_require__(0);
+var _uuid = __webpack_require__(1);
 
 var _uuid2 = _interopRequireDefault(_uuid);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function Mur(event) {
+function Mur(event, murSchema) {
   var data = JSON.parse(event.body);
   var mur = {
     TableName: "murs",
@@ -269,8 +270,11 @@ function Mur(event) {
       "initNbShr": { N: data.initNbShr },
       "initShrPc": { N: data.initShrPc },
       "pcIncrem": { N: data.pcIncrem },
-      "shrIncrem": { N: data.shrIncrem }
-    }
+      "shrIncrem": { N: data.shrIncrem },
+      "murSchemas": { SS: [murSchema.Item.murSchemaId.S] }
+    },
+    ReturnConsumedCapacity: "TOTAL",
+    ReturnItemCollectionMetrics: "SIZE"
   };
   return mur;
 }
@@ -287,20 +291,18 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = MurSchema;
 
-var _uuid = __webpack_require__(0);
+var _uuid = __webpack_require__(1);
 
 var _uuid2 = _interopRequireDefault(_uuid);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function MurSchema(event, murObject) {
+function MurSchema(event) {
   var data = JSON.parse(event.body);
-  console.log(murObject);
   var murSchema = {
     TableName: "murSchema",
     Item: {
       "murSchemaId": { S: _uuid2.default.v1() },
-      "murId": { S: murObject.Item.murId.S },
       "createdAt": { N: new Date().getTime().toString() },
       "totalNbShr": { N: "1" },
       "maxNbShr": { N: "1" },

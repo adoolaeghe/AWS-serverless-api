@@ -1,6 +1,6 @@
 import uuid from "uuid";
 
-export default function Mur (event) {
+export default function Mur (event, murSchema) {
   const data = JSON.parse(event.body);
   const mur = {
     TableName: "murs",
@@ -13,7 +13,10 @@ export default function Mur (event) {
       "initShrPc": {N : data.initShrPc},
       "pcIncrem": {N : data.pcIncrem},
       "shrIncrem": {N: data.shrIncrem},
-    }
+      "murSchemas": {SS: [murSchema.Item.murSchemaId.S]}
+    },
+    ReturnConsumedCapacity: "TOTAL",
+    ReturnItemCollectionMetrics: "SIZE"
   };
   return mur
 }
