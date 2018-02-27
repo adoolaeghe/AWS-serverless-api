@@ -1,5 +1,5 @@
 {
-  "body": "{\"content\":\"hello world\",\"attachment\":\"hello.jpg\"}",
+  "body": "{\"songName\":\"Hello\",\"initNbShr\":\"4\",\"initShrPc\":\"2\",\"pcIncrem\":\"2\",\"shrIncrem\":\"5\"}",
   "requestContext": {
     "identity": {
       "cognitoIdentityId": "USER-SUB-1234"

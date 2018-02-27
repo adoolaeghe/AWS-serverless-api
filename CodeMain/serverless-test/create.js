@@ -1,24 +1,24 @@
 import uuid from "uuid";
 import * as dynamoDbLib from "./libs/dynamodb-lib";
 import { success, failure } from "./libs/response-lib";
+import AWS from "aws-sdk";
+import Murs from "./models/murs"
+import MurSchema from "./models/murSchema"
 
 export async function main(event, context, callback) {
 
-  const data = JSON.parse(event.body);
-  const params = {
-    TableName: "notes",
-    Item: {
-      userId: event.requestContext.identity.cognitoIdentityId,
-      noteId: uuid.v1(),
-      content: data.content,
-      createdAt: new Date().getTime()
-    }
-  };
+  const murObject = Murs(event);
+  const murSchemaObject = MurSchema(event, murObject);
 
-  try {
-    await dynamoDbLib.call("put", params);
-    callback(null, success(params.Item));
-  } catch (e) {
-    callback(null, failure({ status: false }));
-  }
+  // params.Item.murSchemas.push(params1.Item.userSchemaId);
+
+  var dynamodb = new AWS.DynamoDB();
+
+  dynamodb.putItem(murSchemaObject, function(err, data) {
+   if (err) console.log(err, err.stack);
+  });
+
+  dynamodb.putItem(murObject, function(err, data) {
+   if (err) console.log(err, err.stack);
+  });
 }
