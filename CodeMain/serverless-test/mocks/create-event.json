@@ -1,5 +1,5 @@
 {
-  "body": "{\"songName\":\"Hello\",\"initNbShr\":\"4\",\"initShrPc\":\"2\",\"pcIncrem\":\"2\",\"shrIncrem\":\"5\"}",
+  "body": "{\"songName\":\"Hello\",\"initNbShr\":\"20\",\"initShrPc\":\"2\",\"pcIncrem\":\"2\",\"shrIncrem\":\"5\",\"murName\":\"new mur name\",\"initLength\":\"20000\"}",
   "requestContext": {
     "identity": {
       "cognitoIdentityId": "USER-SUB-1234"

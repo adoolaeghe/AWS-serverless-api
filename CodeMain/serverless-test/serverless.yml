@@ -29,14 +29,8 @@ provider:
       Resource: "arn:aws:dynamodb:eu-west-2:*:*"
 
 functions:
-  # Defines an HTTP API endpoint that calls the main function in create.js
-  # - path: url path is /notes
-  # - method: POST request
-  # - cors: enabled CORS (Cross-Origin Resource Sharing) for browser cross
-  #     domain api call
-  # - authorizer: authenticate using the AWS IAM role
   createMur:
-    handler: murApi/createMur.main
+    handler: function/createMur.main
     events:
       - http:
           path: notes
@@ -44,11 +38,8 @@ functions:
           cors: true
           authorizer: aws_iam
 
-  get:
-    # Defines an HTTP API endpoint that calls the main function in get.js
-    # - path: url path is /notes/{id}
-    # - method: GET request
-    handler: get.main
+  getMur:
+    handler: function/getMur.main
     events:
       - http:
           path: notes/{id}
@@ -57,10 +48,16 @@ functions:
           authorizer: aws_iam
 
   list:
-    # Defines an HTTP API endpoint that calls the main function in list.js
-    # - path: url path is /notes
-    # - method: GET request
-    handler: murApi/listUserMurs.main
+    handler: function/listUserMurs.main
+    events:
+      - http:
+          path: notes
+          method: get
+          cors: true
+          authorizer: aws_iam
+
+  listAllMur:
+    handler: function/listAllMur.main
     events:
       - http:
           path: notes
@@ -69,9 +66,6 @@ functions:
           authorizer: aws_iam
 
   update:
-    # Defines an HTTP API endpoint that calls the main function in update.js
-    # - path: url path is /notes/{id}
-    # - method: PUT request
     handler: update.main
     events:
       - http:
@@ -80,14 +74,17 @@ functions:
           cors: true
           authorizer: aws_iam
 
-  delete:
-    # Defines an HTTP API endpoint that calls the main function in delete.js
-    # - path: url path is /notes/{id}
-    # - method: DELETE request
-    handler: delete.main
+  deleteMur:
+    handler: function/deleteMur.main
     events:
       - http:
           path: notes/{id}
           method: delete
           cors: true
           authorizer: aws_iam
+
+  # addSchemaToMur: AS A POST /mur/:id/schema
+  #* GetSCHEMA: AS A GET mur/:id/schema/:id | HANDLE THE GET SHARE REQUEST
+  #* GetSHARE: AS A GET mur/:id/schema/:id/share/:id
+  #* BuyShare: AS A PUT  mur/:id/schema/:id/share/:id | sellingSHare in part of buying share
+  # Update share: AS A PATCH mur/:id
