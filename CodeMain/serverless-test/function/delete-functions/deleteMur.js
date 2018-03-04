@@ -1,10 +1,11 @@
-import * as dynamoDbLib from "../libs/dynamodb-lib";
-import { success, failure } from "../libs/response-lib";
+import * as dynamoDbLib from "../../libs/dynamodb-lib";
+import { success, failure } from "../../libs/response-lib";
 import AWS from "aws-sdk";
 
 const dynamodb = new AWS.DynamoDB();
 
 export async function main(event, context, callback) {
+
   const params = {
     Key: {
      "murId": {
@@ -15,15 +16,14 @@ export async function main(event, context, callback) {
       }
     },
     TableName: "murs",
+    ReturnValues: "ALL_OLD"
   };
 
-  dynamodb.getItem(params, (err, data) => {
+  dynamodb.deleteItem(params, (err, data) => {
     if (err) {
-      console.log(err)
       callback(null, failure({ status: false, error: "The query coudn't match any elements" }));
     } else {
-      console.log(data)
-      callback(null, success(data))
+      (data.Attributes) ? callback(null, success(data)) : callback(null, failure({ status: false, error: "Couldn't find any mur to delete" }));
     }
   })
 }

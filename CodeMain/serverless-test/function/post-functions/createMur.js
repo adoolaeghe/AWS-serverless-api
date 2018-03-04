@@ -1,13 +1,13 @@
 import uuid from "uuid";
-import * as dynamoDbLib from "../libs/dynamodb-lib";
+import * as dynamoDbLib from "../../libs/dynamodb-lib";
 import AWS from "aws-sdk";
 
-import { success, failure } from "../libs/response-lib";
-import createMurParams from "../libs/params/createMurParams";
+import { success, failure } from "../../libs/response-lib";
+import createMurParams from "../../libs/params/createMurParams";
 
 const dynamodb = new AWS.DynamoDB();
 
-export async function main(event, context, callback) {
+module.exports.main = (event, context, callback) => {
 
   const murParams = createMurParams(event);
 
@@ -19,3 +19,6 @@ export async function main(event, context, callback) {
     return callback(null, success(data));
   })
 }
+
+
+module.exports = TacoGallery;

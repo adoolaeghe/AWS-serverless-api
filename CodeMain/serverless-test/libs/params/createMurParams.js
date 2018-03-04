@@ -8,7 +8,7 @@ import { calcInitShareVal,
          calcInitTotVal } from "../murSchemaHelpers";
 
 export default function createMurParams (event) {
-  
+
   const data = JSON.parse(event.body);
 
   const murId = uuid.v1();
@@ -24,7 +24,7 @@ export default function createMurParams (event) {
     RequestItems: {
       "murs": [murParam],
       "songs": [songParam],
-      "layerSchema": [layerParam],
+      "layers": [layerParam],
       "shares": sharesParams(data.initNbShr, data.initShrPc, murId, songId, layerId)
     }
   };

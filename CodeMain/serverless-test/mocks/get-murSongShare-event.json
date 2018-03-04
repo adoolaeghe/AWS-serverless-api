@@ -1,0 +1,10 @@
+{
+  "pathParameters": {
+    "songId": "a9635611-1e1b-11e8-916f-b1c7cc2b7542"
+  },
+  "requestContext": {
+    "identity": {
+      "cognitoIdentityId": "USER-SUB-1234"
+    }
+  }
+}

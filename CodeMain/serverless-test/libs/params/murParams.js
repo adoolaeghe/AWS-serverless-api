@@ -5,7 +5,7 @@ export default function murParams (event, data, murId) {
     PutRequest: {
       Item: {
         "userid": {S : event.requestContext.identity.cognitoIdentityId},
-        "murId": {S : uuid.v1()},
+        "murId": {S : murId},
         "createdAt": {N : new Date().getTime().toString()},
         "murName": {S : data.murName},
         "initNbShr": {N: data.initNbShr},

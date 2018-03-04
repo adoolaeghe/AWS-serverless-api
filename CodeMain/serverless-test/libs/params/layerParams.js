@@ -6,7 +6,7 @@ export default function layerParams (data, murId, songId, layerId) {
   const Layer = {
     PutRequest: {
       Item: {
-        "layerSchemaId": {S : layerId},
+        "layerId": {S : layerId},
         "createdAt": {N : new Date().getTime().toString()},
         "songId": {S : songId},
         "murId": {S : murId},
